@@ -2,25 +2,18 @@ terraform {
   required_version = ">= 1.5"
 
   required_providers {
-    kind = {
-      source  = "tehcyx/kind"
-      version = "~> 0.4"
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.4"
     }
   }
 }
 
-provider "kind" {}
-
-resource "kind_cluster" "demo" {
-  name       = var.cluster_name
-  node_image = "kindest/node:v1.29.2"
-
-  kind_config {
-    kind        = "Cluster"
-    api_version = "kind.x-k8s.io/v1alpha4"
-
-    node {
-      role = "control-plane"
-    }
-  }
+resource "local_file" "cluster_config" {
+  content  = <<-EOT
+    cluster_name = "${var.cluster_name}"
+    environment  = "demo"
+    managed_by   = "atlantis"
+  EOT
+  filename = "${path.module}/cluster-config.txt"
 }

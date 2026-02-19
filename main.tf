@@ -24,3 +24,21 @@ resource "kind_cluster" "demo" {
     }
   }
 }
+
+resource "kind_cluster" "worker" {
+  name       = "${var.cluster_name}-workers"
+  node_image = "kindest/node:v1.29.2"
+
+  kind_config {
+    kind        = "Cluster"
+    api_version = "kind.x-k8s.io/v1alpha4"
+
+    node {
+      role = "control-plane"
+    }
+
+    node {
+      role = "worker"
+    }
+  }
+}
